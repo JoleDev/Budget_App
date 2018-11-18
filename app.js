@@ -64,7 +64,9 @@ var uiController = (function () {
         inputType: ".add__type",
         description: ".add__description",
         value: ".add__value",
-        addButton: ".add__btn"
+        addButton: ".add__btn",
+        incomeContainer: ".income__list",
+        expenseContainer: ".expenses__list"
     };
 
     //This function will return an object and will assign that object to the uiController variable.
@@ -80,6 +82,28 @@ var uiController = (function () {
 
         getNames: function () {
             return names;
+        },
+
+        addListItem : function (obj, type) {
+            var html, newHtml, element;
+            //Create HTML String with placeholder text
+            if (type === "income") {
+                element = names.incomeContainer;
+
+                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';    
+            } else if (type === "expense") {
+                element = names.expenseContainer;
+
+                html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+            };
+            
+            //Replace the placeholder text with some actual text
+            newHtml = html.replace ("%id%", obj.id);
+            newHtml = newHtml.replace ("%description%", obj.description);
+            newHtml = newHtml.replace ("%value%", obj.value);
+
+            //Insert the HTML to the DOM
+            document.querySelector (element).insertAdjacentHTML ("beforeend", newHtml);
         }
     };
 })();
@@ -114,8 +138,10 @@ var globalController = (function (bdgCtrl, uiCtrl) {
         //Task two -  Add items to the budgte data
         newItem = bdgCtrl.addItem (input.type, input.description, input.value);
 
+        //Task three - Display the input data in HTML
+        uiCtrl.addListItem (newItem, input.type);
+ 
         //Task three - Calculate the budget value
-
         //Display the budget
     };
 
