@@ -16,13 +16,13 @@ var budgetController = (function () {
 
     //Object based data structutre used to store the data
     var data = {
-        allItems : {
-            expense : [],
-            income : []
+        allItems: {
+            expense: [],
+            income: []
         },
-        totals : {
-            expense : 0,
-            income : 0
+        totals: {
+            expense: 0,
+            income: 0
         }
     };
 
@@ -32,16 +32,16 @@ var budgetController = (function () {
 
             //Create new ID
             if (data.allItems[type].length > 0) {
-                id = data.allItems[type][data.allItems[type].length-1].id + 1;
+                id = data.allItems[type][data.allItems[type].length - 1].id + 1;
             } else {
                 id = 0;
             }
-            
+
             //Create new item based on the type, Income or Expense
             if (type === "income") {
-                newItem = new Income (id, des, val);
+                newItem = new Income(id, des, val);
             } else if (type === "expense") {
-                newItem = new Expense (id, des, val);
+                newItem = new Expense(id, des, val);
             }
 
             //Puch the new data to the data array defined above
@@ -50,7 +50,7 @@ var budgetController = (function () {
         },
 
         testing: function () {
-            console.log (data);
+            console.log(data);
         }
     }
 
@@ -76,7 +76,7 @@ var uiController = (function () {
             return {
                 type: document.querySelector(names.inputType).value, // Return will be either income (for Income) or expense (For expense)
                 description: document.querySelector(names.description).value,
-                value: document.querySelector(names.value).value
+                value: parseFloat(document.querySelector(names.value).value)
             }
         },
 
@@ -84,40 +84,40 @@ var uiController = (function () {
             return names;
         },
 
-        addListItem : function (obj, type) {
+        addListItem: function (obj, type) {
             var html, newHtml, element;
             //Create HTML String with placeholder text
             if (type === "income") {
                 element = names.incomeContainer;
 
-                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';    
+                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             } else if (type === "expense") {
                 element = names.expenseContainer;
 
                 html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             };
-            
+
             //Replace the placeholder text with some actual text
-            newHtml = html.replace ("%id%", obj.id);
-            newHtml = newHtml.replace ("%description%", obj.description);
-            newHtml = newHtml.replace ("%value%", obj.value);
+            newHtml = html.replace("%id%", obj.id);
+            newHtml = newHtml.replace("%description%", obj.description);
+            newHtml = newHtml.replace("%value%", obj.value);
 
             //Insert the HTML to the DOM
-            document.querySelector (element).insertAdjacentHTML ("beforeend", newHtml);
+            document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
         },
 
         clearFields: function () {
             var fields, fieldsArray;
 
-            fields = document.querySelectorAll (names.description + ',' + names.value);
+            fields = document.querySelectorAll(names.description + ',' + names.value);
             //querySelectorAll does not returns an array, It returns kind of a list, So we have to convert this list to an array
             //We can use array method slice()
             //In than case also we cannot call fields.slice(), as fields is not an array
             //So we have to use call method in Array prototype slice.call(fields), Slice method is in the Array Prototype
-            fieldsArray = Array.prototype.slice.call (fields);
-            
+            fieldsArray = Array.prototype.slice.call(fields);
+
             fieldsArray.forEach(function (current, index, arr) {
-                 current.value = "";
+                current.value = "";
             });
 
             //Divert back the focus to description input
@@ -147,33 +147,42 @@ var globalController = (function (bdgCtrl, uiCtrl) {
         });
     };
 
+    var updateBudget = function () {
+        //1. Calculate the budget
+
+        //2. Return the budget value
+
+        //3. Display the budget value in UI
+    };
+
     var ctrlAddItems = function () {
         var input, newItem;
 
-        //Task one - Get the input data
+        //1. Get the input data
         input = uiCtrl.getInput();
 
-        //Task two -  Add items to the budgte data
-        newItem = bdgCtrl.addItem (input.type, input.description, input.value);
+        if (input.description != "" && !isNaN (input.value) && input.value > 0) {
+            //2. Add items to the budgte data
+            newItem = bdgCtrl.addItem(input.type, input.description, input.value);
 
-        //Task three - Display the input data in HTML
-        uiCtrl.addListItem (newItem, input.type);
-        
-        //Clear the input feilds
-        uiCtrl.clearFields();
+            //3. Display the input data in HTML
+            uiCtrl.addListItem(newItem, input.type);
 
-        //Task three - Calculate the budget value
-        //Display the budget
+            //4. Clear the input feilds
+            uiCtrl.clearFields();
+
+            //5. Calculate the budget value & Display the budget
+        };
     };
 
     return {
-        init : function () {
-            console.log ("Application as started")
-            setupEventListners ();
+        init: function () {
+            console.log("Application as started")
+            setupEventListners();
         }
     };
 
 })(budgetController, uiController);
 
 //Calling the init function
-globalController.init ();
+globalController.init();
