@@ -104,6 +104,24 @@ var uiController = (function () {
 
             //Insert the HTML to the DOM
             document.querySelector (element).insertAdjacentHTML ("beforeend", newHtml);
+        },
+
+        clearFields: function () {
+            var fields, fieldsArray;
+
+            fields = document.querySelectorAll (names.description + ',' + names.value);
+            //querySelectorAll does not returns an array, It returns kind of a list, So we have to convert this list to an array
+            //We can use array method slice()
+            //In than case also we cannot call fields.slice(), as fields is not an array
+            //So we have to use call method in Array prototype slice.call(fields), Slice method is in the Array Prototype
+            fieldsArray = Array.prototype.slice.call (fields);
+            
+            fieldsArray.forEach(function (current, index, arr) {
+                 current.value = "";
+            });
+
+            //Divert back the focus to description input
+            fieldsArray[0].focus();
         }
     };
 })();
@@ -140,7 +158,10 @@ var globalController = (function (bdgCtrl, uiCtrl) {
 
         //Task three - Display the input data in HTML
         uiCtrl.addListItem (newItem, input.type);
- 
+        
+        //Clear the input feilds
+        uiCtrl.clearFields();
+
         //Task three - Calculate the budget value
         //Display the budget
     };
